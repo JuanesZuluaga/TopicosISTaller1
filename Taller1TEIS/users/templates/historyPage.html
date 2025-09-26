@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Historial</h2>
+    {% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <p class="alert alert-success mt-3">{{ message }}</p>
+        {% elif message.tags == 'error' %}
+            <p class="alert alert-danger mt-3">{{ message }}</p>
+        {% elif message.tags == 'warning' %}
+            <p class="alert alert-warning mt-3">{{ message }}</p>
+        {% else %}
+            <p class="alert alert-info mt-3">{{ message }}</p>
+        {% endif %}
+    {% endfor %}
+    {% endif %} 
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Acción</th>
+                    <th>Fecha</th>
+                    <th>Descripción</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resume in resumes %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>CV Subido</td>
+                    <td>{{ resume.uploaded_at|date:"Y-m-d" }}</td>
+                    <td>Se subió el archivo {{ resume.file.name }} para evaluación.</td>
+                    <td>
+                        <a href="{% url 'delete_cv' resume.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+        </div>
+        <h3 class="text-center mt-5">CV Aplicados</h3>
+        <div class="table-responsive mt-3">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Acción</th>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for applied in applied_resumes %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter}}</th>
+                        <td>CV Aplicado</td>
+                        <td>{{ applied.applied_at|date:"Y-m-d" }}</td>
+                        <td>El CV {{ applied.resume.file.name }} fue aplicado a la vacante "{{ applied.vacancy.title }}".</td>
+                        <td>
+                            {% if applied.state == 'applied' %}
+                                Aplicado
+                            {% elif applied.state == 'interview' %}
+                                Entrevista
+                            {% elif applied.state == 'hired' %}
+                                Contratado
+                            {% elif applied.state == 'rejected' %}
+                                Rechazado
+                            {% else %}
+                                Desconocido
+                            {% endif %}
+                    </tr>
+                    {% endfor %} 
+
+                </tbody>
+            </table>
+        </div>
+
+
+        <h3 class="text-center mt-5">Vacantes Guardadas</h3>
+        <div class="table-responsive mt-3">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Acción</th>
+                        <th>Fecha</th>
+                        <th>Descripción</th>
+                        <th></th>
+                        <th>Mejorar cv con</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for saved in saved_vacancies %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>Vacante Guardada</td>
+                        <td>{{ saved.saved_at|date:"Y-m-d" }}</td>
+                        <td>Se guardó la vacante "{{ saved.vacancy.title }}".</td>
+                        <td>
+                            <a href="{% url 'unsave' saved.id %}" class="btn btn-danger btn-sm">Borrar</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'goto_cv_improver' saved.id 'saved' %}" class="btn btn-success btn-sm">Seleccionar</a>
+                        </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="d-grid mt-3">
+        <a href="{% url 'home' %}" class="btn" style="background-color: #009f85; color: #ffff;">Volver</a>
+    </div>
+</div>
+
+{% endblock content %}

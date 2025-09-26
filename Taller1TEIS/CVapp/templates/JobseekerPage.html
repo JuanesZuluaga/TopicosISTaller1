@@ -1,0 +1,56 @@
+{% extends 'base.html'%}
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <p class="alert alert-success mt-3">{{ message }}</p>
+        {% elif message.tags == 'error' %}
+            <p class="alert alert-danger mt-3">{{ message }}</p>
+        {% elif message.tags == 'warning' %}
+            <p class="alert alert-warning mt-3">{{ message }}</p>
+        {% else %}
+            <p class="alert alert-info mt-3">{{ message }}</p>
+        {% endif %}
+    {% endfor %}
+    {% endif %}  
+<form method="post" enctype="multipart/form-data" action="{% url 'upload_cv' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_file" class="form-label">Selecciona el archivo de tu cv actual</label>
+        <input type="file" name="file" class="form-control" id="id_file" accept=".pdf,.md,.txt">
+    </div>
+    <div class="d-grid mt-3">
+        <button type="submit" class="btn" style="background-color: #009f85; color: #ffff;">Subir CV</button>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-6 custom-box">
+            <label for="cv_text" class="form-label">Ingresa tu cv en forma de texto</label>
+            <textarea name="cv_text" class="form-control" id="cv_text" rows="10" placeholder="Text">{{ cv_text }}</textarea>
+        </div>
+        <div class="col-md-6 custom-box">
+            <label for="vacancy" class="form-label">Ingresa vacante y especificaciones</label>
+            <textarea required=True name="vacancy" class="form-control" id="vacancy" rows="10" placeholder="Text">{{ vacancy }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="id_image" class="form-label">Sube imagen para el CV</label>
+            <input type="file" name="image" class="form-control" id="id_image" accept=".jpg, .png">
+        </div>
+    </div>
+</form>
+
+<form method="post" enctype="multipart/form-data" action="{% url 'mejorar_cv' %}" class="p-4 border rounded bg-light mt-3">
+    {% csrf_token %}
+    <div class="mt-2">
+        <label for="outputFormat" class="form-label">Formato de salida:</label>
+        <select name="outputFormat" id="outputFormat" class="form-select">
+            <option value="txt">TXT</option>
+            <option value="docx">DOCX</option>
+            <option value="pdf">PDF</option>
+        </select>
+    </div>
+    <div class="d-grid mt-3">
+        <button type="submit" class="btn" style="background-color: #009f85; color: #ffff;">Mejorar CV y Descargar</button>
+    </div>
+</form>
+
+{% endblock content %}
